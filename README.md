@@ -24,7 +24,7 @@ Within the LV Box we have the 3 modules:
 <img src="LV Schematic.png" alt="Figure showing our LV Schematic" width="600"/>	
 </p>
 
-Data is first relayed from the **Telemetry** module or from external HV controllers to the **Safety** module by utilizing CANBUS. Within the **Safety** module there are 3 ESP32s that each focus on checking different data. For example one module will check on data from the MCU (Motor Control Unit) while another one checks data from the BMS (Battery Management System). When any of the **Safety** modules determines a fault it will take action and send out a fault code on the CANBUS network. This fault code can be displayed or used to prevent further damage.
+Data is first relayed from the **[Telemetry](README.md#telemetry)** module or from external HV controllers to the **[Safety](README.md#safety)** module by utilizing CANBUS. Within the **[Safety](README.md#safety)** module there are 3 ESP32s that each focus on checking different data. For example one module will check on data from the MCU (Motor Control Unit) while another one checks data from the BMS (Battery Management System). When any of the **Safety** modules determines a fault it will take action and send out a fault code on the CANBUS network. This fault code can be displayed or used to prevent further damage.
 
 This is the flowchart for how data is passed along and used:
 <p align="center">
