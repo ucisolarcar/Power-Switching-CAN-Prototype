@@ -1,28 +1,44 @@
-This documentation breaks down our CANBUS and Power Switching Prototype. The entire system consists of 3 different modules:
-- **[[#Telemetry]]**
-- **Safety Module**
-- **Power Switching Circuit**
----
-# Overview
+
+# Table of Contents:
+1.  **[Overview](README.md#Overview)**
+	
+ 	a. **[Telemetry Module](README.md#Telemetry)**
+	
+ 	b. **[Safety Module](README.md#Safety)**
+	
+	c. **[Power Switching Circuit](README.md#Power)**
+
+2.  **[The Prototype](README.md#Prototype)**
+3.  **[Setup & Installation](README.md#Setup)**
+
+This documentation breaks down our CANBUS and Power Switching Prototype. The entire system consists of 3 different modules.
+# [Overview](#Overview)
 
 In the overview of our electrical systems we are focusing on the LV Box:
-![[Top Level Schematic.png]]
+<p align="center">
+<img src="Top Level Schematic.png" alt="Figure showing our Top Level Schematic" width="600"/>	
+</p>
 
 Within the LV Box we have the 3 modules:
-![[LV Schematic.png]]
+<p align="center">
+<img src="LV Schematic.png" alt="Figure showing our LV Schematic" width="600"/>	
+</p>
 
 Data is first relayed from the **Telemetry** module or from external HV controllers to the **Safety** module by utilizing CANBUS. Within the **Safety** module there are 3 ESP32s that each focus on checking different data. For example one module will check on data from the MCU (Motor Control Unit) while another one checks data from the BMS (Battery Management System). When any of the **Safety** modules determines a fault it will take action and send out a fault code on the CANBUS network. This fault code can be displayed or used to prevent further damage.
 
 This is the flowchart for how data is passed along and used:
-![[CANbus.drawio (1).png]]
+<p align="center">
+<img src="CANbus.drawio (1).png" alt="Figure showing our flowchart for sending CAN data" width="600"/>	
+</p>
 
----
-# The Prototype
+# [The Prototype](#Prototype)
 
 The prototype is a combination of all 3 modules as described above. The result is this schematic below:
-![[Fritzing Schematic.png]]
+<p align="center">
+<img src="Fritzing Schematic.png" alt="Figure showing our wiring for our prototype" width="900"/>	
+</p>
 
-## Telemetry
+## [Telemetry](#Telemetry)
 
 Our telemetry system comprises of an Arduino MEGA hooked up to:
 - Adafruit GPS Module
@@ -35,11 +51,11 @@ For our prototype we are just fetching data from the accelerometer and current s
 
 The reason current sensor data is fetched more frequently is to simulate system critical data that would be transmitted by HV controllers such as the BMS. We need to frequently monitor BMS data to ensure that our battery is in a safe state. If it isn't then we would need to swiftly act to prevent damage.
 
-Once these values are fetched then they are sent over CAN through the MCP2515. The **Telemetry** module is hooked up to the **Safety** module via this CAN network.
+Once these values are fetched then they are sent over CAN through the MCP2515. The **[Telemetry](README.md#Telemetry)** module is hooked up to the **[Safety](README.md#Telemetry)** module via this CAN network.
 
-## Safety
+## [Safety](#Safety)
 
-Once data has been transmitted from the **Telemetry** module over CAN we need to make sure that data is in range. For the case of the prototype we are only interested in the current sensor data.
+Once data has been transmitted from the **[Telemetry](README.md#Telemetry)** module over CAN we need to make sure that data is in range. For the case of the prototype we are only interested in the current sensor data.
 
 For the prototype this module consists of:
 - An ESP32
@@ -53,7 +69,7 @@ In our test to make things easy we are assuming the current value we want is **0
 
 On top of being able to react to current faults the prototype should be the one controlling the precharge circuit. This feature has not been implemented yet, but the wiring for the MOSFETs that would be controlling the precharge has been included.
 
-## Power Switching Circuit
+## [Power Switching Circuit](#Power)
 
 The power switching circuit is model of the one in our schematic. It consists of:
 - 2 SPDT relays
@@ -71,14 +87,14 @@ Although the circuit is receiving power, it does not get sent to the rest of the
 - The IMD (through the IMD_CTRL)
 The Red LED will turn on if the circuit reaches the fault state. To reset it the fault needs to be cleared and the Green LED will turn back on. If the driver switch is in the OFF position then neither LED will be on.
 
-# Setup & Installation
+# [Setup & Installation](#Setup)
 
 To replicate this prototype first recreate the circuit through the Fritzing schematic found above (the fritzing file is linked here). Then download the code to the respective microcontrollers:
 
-- MEGA_Lib_Test.ino should be downloaded to the Arduino MEGA
-- esp32_receive_lib_test.ino should be downloaded to the ESP32
+- **[MEGA_Lib_Test.ino](MEGA_Lib_Test.ino)** should be downloaded to the Arduino MEGA
+- **[esp32_receive_lib_test.ino](esp32_receive_lib_test.ino)** should be downloaded to the ESP32
 
-**NOTE:** The **canFloat** and **sensorFunctions** libraries may have to be installed in your IDE. Also ensure to select the correct ESP32 board and to have the correct ESP32 library downloaded.
+**NOTE:** The **[canFloat](canFloat.zip)** and **[sensorFunctions](sensorFunctions.zip)** libraries may have to be installed in your IDE. Also ensure to select the correct ESP32 board and to have the correct ESP32 library downloaded.
 
 On startup the MEGA will calibrate its current sensor to get a reading of 0A. So make sure that the device that is hooked up to the current sensor is not outputting current. After that startup sequence it will send accelerometer data every 500ms and current data every 50ms.
 
